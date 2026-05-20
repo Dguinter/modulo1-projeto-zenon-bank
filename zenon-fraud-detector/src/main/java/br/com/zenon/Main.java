@@ -30,9 +30,12 @@ public class Main {
 
         IO.println("------------------------------------------------------------------------------");
 
+     var fraudAnalyzer = new FraudAnalyzer();
+     fraudAnalyzer.printFraudAnalysis(transactions);
         List<Transaction> transactionsBadData = transactionIngestor.read("data/paysim_with_bad_data.csv");
         IO.println(transactionsBadData.size());
 
      transactionsBadData.forEach(IO::println);
+     IO.println("------------------------------------------------------------------------------");
     }
 }
