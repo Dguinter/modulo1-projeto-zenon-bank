@@ -25,10 +25,15 @@ public class Main {
         IO.println("------------------------------------------------------------------------------");
 
         var transactionIngestor = new TransactionIngestor();
+        var transactionReport = new TransactionReport();
+
         List<Transaction> transactions = transactionIngestor.read("data/PS_20174392719_1491204439457_log.csv");
         IO.println(transactions.size());
 
         transactions.forEach(IO::println);
+
+        String bigFileName = "data/PS_20174392719_1491204439457_log.csv";
+        transactionReport.printSummary(bigFileName);
 
         IO.println("------------------------------------------------------------------------------");
 

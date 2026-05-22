@@ -5,17 +5,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 public class TransactionIngestor {
 
     public List<Transaction> read(String fileName) {
         Path path = Path.of(fileName);
-        try {
-            List<String> lines = Files.readAllLines(path);
-            return lines.stream()
+        try (Stream<String> lines = Files.lines(path)) {
+            return lines
                     .skip(1)
-                    .limit(100000)
+                    .limit(1_000_000)
                     .map(this::parseTransaction)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
