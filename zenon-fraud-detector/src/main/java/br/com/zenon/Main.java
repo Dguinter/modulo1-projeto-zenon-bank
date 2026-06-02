@@ -32,8 +32,8 @@ public class Main {
 
         transactions.forEach(IO::println);
 
-        String bigFileName = "data/PS_20174392719_1491204439457_log.csv";
-        transactionReport.printSummary(bigFileName);
+        //String bigFileName = "data/PS_20174392719_1491204439457_log.csv";
+        //transactionReport.printSummary(bigFileName);
 
         IO.println("------------------------------------------------------------------------------");
 

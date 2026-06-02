@@ -1,18 +1,14 @@
 package br.com.zenon;
+import br.com.zenon.TransactionReport.Statistics;
 
 public class ReportMain {
     void main() {
-        String bigFileName = "data/PS_20174392719_1491204439457_log.csv";
-
-        var transactionReport = new TransactionReport();
-
-        IO.println("Iniciando o relatorio original");
-        IO.print("Arquivo: " + bigFileName);
-        IO.println("-----------------------------------------------------------------------------");
-        transactionReport.printSummary(bigFileName);
-
-        IO.println("------------------------------------------------------------------------------");
-        IO.print("Relatorio Finalizado com sucesso: ");
-
+    var transactionReport = new TransactionReport();
+    Statistics statistics = transactionReport.generateReport("data/PS_20174392719_1491204439457_log.csv");
+    IO.println("""
+            Total de linhas: %d
+            Total de fraudes: %d
+            Valor total Transacionado: %2f
+            """.formatted(statistics.totalTransactions(), statistics.totalFrauds(), statistics.totalAmount()));
     }
 }

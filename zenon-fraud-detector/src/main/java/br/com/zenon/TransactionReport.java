@@ -1,44 +1,54 @@
 package br.com.zenon;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class TransactionReport {
 
-    public void printSummary(String fileName) {
+    private record ReportTransaction(BigDecimal amount, boolean isFraud) {
+    }
+
+    public record Statistics(long totalTransactions, long totalFrauds, BigDecimal totalAmount) {
+     private static Statistics ZERO = new Statistics(0, 0, BigDecimal.ZERO);
+     private Statistics addReportTransaction(ReportTransaction reportTransaction) {
+         return new Statistics(
+                 totalTransactions + 1,
+                 totalFrauds + (reportTransaction.isFraud?  1 : 0),
+                 totalAmount.add(reportTransaction.amount));
+        }
+     }
+
+    public Statistics generateReport(String fileName) {
         Path path = Path.of(fileName);
-
-        long totalTransactions = 0;
-        long totalFrauds = 0;
-        BigDecimal totalAmount = BigDecimal.ZERO;
-
-        try (var lines = Files.lines(path)) {
-            var iterator = lines
+        try (Stream<String> lines = Files.lines(path)){
+             return lines
                     .skip(1)
-                    .iterator();
-
-            while (iterator.hasNext()) {
-                String line = iterator.next();
-                String[] chunks = line.split(",");
-
-                totalTransactions++;
-
-                BigDecimal amount = new BigDecimal(chunks[2]);
-                totalAmount = totalAmount.add(amount);
-
-                boolean isFraud = "1".equals(chunks[9]);
-                if (isFraud) {
-                    totalFrauds++;
-                }
-            }
-
-            IO.println("Total de transações no arquivo: " + totalTransactions);
-            IO.println("Total de fraudes no arquivo: " + totalFrauds);
-            IO.println("Valor total transacionado: " + totalAmount);
-        } catch (IOException ex) {
+                    .map(this::parseReportTransaction)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                     .reduce(Statistics.ZERO,
+                             Statistics::addReportTransaction
+                              ,(s1, s2) -> s1);
+        } catch (Exception ex) {
             throw new RuntimeException("Erro ao ler o arquivo " + fileName, ex);
+        }
+    }
+    private Optional<ReportTransaction> parseReportTransaction(String line) {
+        try {
+            String[] chunks = line.split(",");
+
+            if (chunks [2] == null ||  chunks [2] .trim().isEmpty()) throw new IllegalArgumentException("Amount is not null: " + chunks[2]);
+            BigDecimal amount = new BigDecimal(chunks[2]);
+
+            boolean isFraud = "1".equals(chunks[9]);
+
+            return Optional.of(new ReportTransaction(amount,isFraud));
+        } catch (Exception e) {
+            System.err.println("Erro ao fazer o parse: " + line + "|" + e);
+            return Optional.empty();
         }
     }
 }
