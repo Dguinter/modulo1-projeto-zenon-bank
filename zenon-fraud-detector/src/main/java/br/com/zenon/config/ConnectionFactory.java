@@ -1,4 +1,4 @@
-package br.com.zenon;
+package br.com.zenon.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,7 +10,8 @@ public class ConnectionFactory {
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://localhost:3306/zenon_frauds", "root", "senha123");
+            //return DriverManager.getConnection("jdbc:mysql://localhost:3306/zenon_frauds", "root", "senha123");
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/zenon_frauds?rewriteBatchedStatements=true", "root", "senha123");
         }catch (SQLException ex){
             throw new RuntimeException("Erro ao conectar no banco de dados", ex);
         }

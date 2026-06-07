@@ -1,4 +1,10 @@
-package br.com.zenon;
+package br.com.zenon.main;
+
+
+import br.com.zenon.config.ConnectionFactory;
+import br.com.zenon.domain.Transaction;
+import br.com.zenon.repository.TransactionSQLRepository;
+import br.com.zenon.service.TransactionIngestor;
 
 import java.math.BigDecimal;
 import java.util.List;

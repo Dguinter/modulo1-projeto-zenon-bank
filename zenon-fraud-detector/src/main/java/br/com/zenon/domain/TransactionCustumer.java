@@ -1,4 +1,4 @@
-package br.com.zenon;
+package br.com.zenon.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
